@@ -1,0 +1,25 @@
+package solids;
+
+import transforms.Point3D;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public abstract class Solid {
+    protected List<Point3D> vertexBuffer = new ArrayList<>();
+    protected List<Integer> indexBuffer = new ArrayList<>();
+
+    public List<Point3D> getVertexBuffer() {
+        return vertexBuffer;
+    }
+
+    public List<Integer> getIndexBuffer() {
+        return indexBuffer;
+    }
+
+    protected  void addIndisces(Integer...indisces) { //... muze byt jakoykoliv pocet vstupnich, jako v poli
+
+        indexBuffer.addAll(Arrays.asList(indisces));
+    }
+}
