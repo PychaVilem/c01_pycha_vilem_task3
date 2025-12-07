@@ -2,14 +2,14 @@ package solids;
 
 import transforms.Point3D;
 
-import java.awt.*;
+import transforms.Col;
 
-public class AsiX  extends Solid {
-    public AsiX() {
-        color = new Color(255, 0, 0);
+public class AxisX extends Solid {
+    public AxisX() {
+        color = new Col(0xff0000);
         vertexBuffer.add(new Point3D(0,0,0));
         vertexBuffer.add(new Point3D(1,0,0));
 
-        addIndisces(0,1);
+        addIndices(0,1);
     }
 }

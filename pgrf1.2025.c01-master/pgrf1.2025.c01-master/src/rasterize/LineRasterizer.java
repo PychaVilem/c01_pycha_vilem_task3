@@ -8,11 +8,11 @@ import java.awt.*;
 
 public abstract class LineRasterizer {
     protected RasterBufferedImage raster;
-    // TODO: vyřešit barvu.
     protected Col color;
 
     public LineRasterizer(RasterBufferedImage raster) {
         this.raster = raster;
+        this.color = new Col(0xffffff);
     }
 
     public void rasterize(int x1, int y1, int x2, int y2) {
@@ -31,5 +31,7 @@ public abstract class LineRasterizer {
         return raster.getHeight();
     }
 
-    public setColor()
+    public void setColor(Col color){
+        this.color = color;
+    }
 }

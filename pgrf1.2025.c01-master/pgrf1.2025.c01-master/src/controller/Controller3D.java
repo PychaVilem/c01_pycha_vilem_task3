@@ -4,17 +4,12 @@ package controller;
 import rasterize.LineRasterizer;
 import rasterize.LineRasterizerGraphics;
 import render.Renderer;
-import solids.Arrow;
-import solids.AsiX;
-import solids.Cube;
-import solids.Solid;
+import solids.*;
 import transforms.*;
 import view.Panel;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class Controller3D {
     private final Panel panel;
@@ -25,10 +20,12 @@ public class Controller3D {
     private Solid cube;
     private Solid arrow;
     private Solid axisX;
+    private Solid axisY;
+    private Solid axisZ;
 
     //Camera
     private Camera camera;
-    private Mat4 model;
+    private Mat4 proj;
 // TODO jaky teleso budu tranformovat a jak ho bude
     public Controller3D(Panel panel) {
 
@@ -43,7 +40,9 @@ public class Controller3D {
 
         proj = new Mat4PerspRH(
                 Math.toRadians(90),
-                panel.getRaster().getHeight() / (double) panel.getRaster().getHeight(),
+                panel.getRaster().getWidth() / (double) panel.getRaster().getHeight(),
+            0.1,
+           100);
 
            // dodelat     orthodopeln = new Mat4OrthoRH();
 
@@ -57,7 +56,9 @@ public class Controller3D {
 
         cube = new Cube();
         arrow = new Arrow();
-        axisX = new AsiX();
+        axisX = new AxisX();
+        axisY = new AxisY();
+        axisZ = new AxisZ();
 
 
         initListeners();
@@ -65,22 +66,17 @@ public class Controller3D {
     }
 
     private void initListeners() {
-        panel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                drawScene();
-            }
-        });
+
         panel.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    arrow.setModel(new Mat4Transl(0.5,0,0));
+                    arrow.mulModel(new Mat4Transl(0.5,0,0));
                 }
                 if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    arrow.setModel(new Mat4Transl(-0.5,0,0));
+                    arrow.mulModel(new Mat4Transl(-0.5,0,0));
                 }
                 if(e.getKeyCode() == KeyEvent.VK_R) {
-                    arrow.setModel(new Mat4Transl(-0.5,0,0)
+                    arrow.mulModel(new Mat4Transl(-0.5,0,0)
                             .mul(new Mat4RotZ(Math.toRadians(15)))
                             .mul(new Mat4Transl(0.5,0,0)));
 
@@ -88,21 +84,21 @@ public class Controller3D {
 
                 if(e.getKeyCode() == KeyEvent.VK_A) {
                     camera = camera.left(0.5);
-                    renderer.setView(camera.getViewMatrix());
+
                 }
                 if(e.getKeyCode() == KeyEvent.VK_D) {
                     camera = camera.right(0.5);
-                    renderer.setView(camera.getViewMatrix());
+
                 }
 
                 if(e.getKeyCode() == KeyEvent.VK_S) {
                     camera = camera.forward(0.5);
-                    renderer.setView(camera.getViewMatrix());
+
                 }
 
                 if(e.getKeyCode() == KeyEvent.VK_A) {
                     camera = camera.backward(0.5);
-                    renderer.setView(camera.getViewMatrix());
+
                 }
 
 
@@ -114,7 +110,13 @@ public class Controller3D {
     private void drawScene() {
         panel.getRaster().clear();
 
+        renderer.setView(camera.getViewMatrix());
+        renderer.render(axisX);
+        renderer.render(axisY);
+        renderer.render(axisZ);
+
         renderer.render(arrow);
+
 
         panel.repaint();
     }

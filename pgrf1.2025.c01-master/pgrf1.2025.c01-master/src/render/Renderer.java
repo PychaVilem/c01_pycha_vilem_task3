@@ -12,16 +12,16 @@ public class Renderer {
     private int width, height;
     private Mat4 view,proj;
 
-    public Renderer(LineRasterizer lineRasterizer, Mat4 proj, Mat4 view, int height, int width) {
+    public Renderer(LineRasterizer lineRasterizer, int width, int height,Mat4 view, Mat4 proj) {
         this.lineRasterizer = lineRasterizer;
-        this.proj = proj;
-        this.view = view;
-        this.height = height;
         this.width = width;
+        this.height = height;
+        this.view = view;
+        this.proj = proj;
     }
 
     public void render(Solid solid){
-
+        lineRasterizer.setColor(solid.getColor());
         
         // Procházení index bufferu (ib) - každé 2 indexy tvoří úsečku
         for(int i = 0; i < solid.getIndexBuffer().size(); i += 2){
@@ -54,19 +54,18 @@ public class Renderer {
 
             //todo dehomogenizace - pozor na deleni 0
             //clip space -> ndc
-            //
-            /*if(a.getW() == 0){
+            if(a.getW() == 0 || b.getW() == 0){
                 continue;
-            }*/
-            a = a.mul(1/a.getW());
-            b= b.mul(1/b.getW());
+            }
+            a = a.mul(1 / a.getW());
+            b = b.mul(1 / b.getW());
 
 
 
 
             // Transformace z NDC (normalized device coordinates) [-1,1] do viewportu [0,width] x [0,height]
-            Vec3D vecA = transoformToWindow(a);
-            Vec3D vecB = transoformToWindow(b);
+            Vec3D vecA = transformToWindow(a);
+            Vec3D vecB = transformToWindow(b);
 
 
 
@@ -80,10 +79,10 @@ public class Renderer {
         }
     }
     //metoda do ktere bude vstupovat point a vystupovat bude vektor
-    private Vec3D transoformToWindow(Point3D p){
+    private Vec3D transformToWindow(Point3D p){
         return new Vec3D(p).mul(new Vec3D(1, -1, 1))  // Otočení Y osy
                 .add(new Vec3D(1, 1, 0))     // Posunutí do [0,2]
-                .mul(new Vec3D((double)(width -1)/2, (double)(height -1 )/2)); // Škálování na viewport
+                .mul(new Vec3D((double)(width - 1) / 2, (double)(height - 1) / 2, 1)); // Škálování na viewport
     }
 
     public void setView(Mat4 view) {
