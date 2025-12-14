@@ -23,7 +23,7 @@ public abstract class Solid {
         return indexBuffer;
     }
 
-    protected  void addIndices(Integer...indices) { //... muze byt jakoykoliv pocet vstupnich, jako v poli
+    protected  void addIndices(Integer...indices) { //... muze byt jakykoliv pocet vstupnich, jako v poli
 
         indexBuffer.addAll(Arrays.asList(indices));
     }
@@ -42,5 +42,9 @@ public abstract class Solid {
 
     public Col getColor(){
         return color;
+    }
+    
+    public void setColor(Col color){
+        this.color = color;
     }
 }
